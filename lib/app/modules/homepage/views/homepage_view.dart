@@ -73,8 +73,11 @@ class HomeView extends GetView<HomeController> {
   }
 
   buildBody(context) {
-    return Padding(
-        padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+     double screenHeight = MediaQuery.of(context).size.height;
+  double screenWidth = MediaQuery.of(context).size.width;
+    return SingleChildScrollView(
+      child:  Padding(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -125,8 +128,10 @@ class HomeView extends GetView<HomeController> {
                 height: 10,
               ),
               Container(
-                height: 400,
-                width: 360,
+                // height: 400,
+                // width: 360,
+                 height: screenHeight * 0.5, 
+            width: screenWidth * 0.9, 
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.blue),
                     borderRadius: BorderRadius.circular(8)),
@@ -149,21 +154,21 @@ class HomeView extends GetView<HomeController> {
               Stack(
                 children: [
                   Container(
-                    // width: 400,
-                    height: 180,
+                height: screenHeight * 0.25,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade300,
                       borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(200),
+                        top:Radius.circular(MediaQuery.of(context).size.width / 2),
                         bottom: Radius.zero,
                       ),
                     ),
                   ),
                   ..._generateSemiCircularAvatars(
-                      _homeController.avatarImages, 150),
+                      _homeController.avatarImages, context),
                   Positioned(
-                      bottom: 20,
-                      left: 150,
+                      bottom: 30,
+                      // left: 140,
+                       left: screenWidth / 2 - 50,
                       child: CircleAvatar(
                         radius: 30,
                         backgroundColor: Colors.black,
@@ -171,20 +176,32 @@ class HomeView extends GetView<HomeController> {
                       ))
                 ],
               )
-            ]));
+            ]))
+ ,
+    );
   }
 
-  List<Widget> _generateSemiCircularAvatars(List<String> images, double radius) {
+
+
+List<Widget> _generateSemiCircularAvatars(
+    List<String> images, BuildContext context) {
   int itemCount = images.length;
 
-  double angleStep = (pi - 0.6) / (itemCount - 1);
-  double startAngle = -pi / 2 + 0.3;
+  double screenWidth = MediaQuery.of(context).size.width;
+  double screenHeight = MediaQuery.of(context).size.height;
+
+  double radius = screenWidth * 0.4;
+
+  double angleRange = pi; 
+  double startAngle = -pi / 2; 
+  double angleStep = angleRange / (itemCount + 1);
 
   return List.generate(itemCount, (index) {
-    double angle = startAngle + (index * angleStep);
+    double angle = startAngle + ((index + 1) * angleStep);
+
     return Positioned(
-      top: radius * (1 - cos(angle)) + 10, 
-      left: radius + radius * sin(angle),
+      top: radius * (1 - cos(angle)) + 10,
+      left: screenWidth / 2 + radius * sin(angle) - 50,
       child: CircleAvatar(
         radius: 25,
         backgroundImage: AssetImage(images[index]),
@@ -193,5 +210,6 @@ class HomeView extends GetView<HomeController> {
     );
   });
 }
+
 
 }
